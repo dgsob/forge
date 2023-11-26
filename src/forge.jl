@@ -1,6 +1,6 @@
 include("./elements.jl")
 include("./generation/aufbau.jl")
-include("./filtering/molgraf.jl")
+include("./filtering/mgraph.jl")
 
 function convert_to_ints(M, masses, ϵ)
     M_int = round(Int, M * ϵ)
@@ -20,11 +20,13 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Stage 2: filtering 
     realizable_formulae = Vector{Vector{Int64}}[]
     for formula in all_formulae
-        if !molgraf_filter(formula)
+        if !mgraph_filter(formula)
             continue
         end
         push!(realizable_formulae, formula)
     end
+
+    # Display formulae 
     println("Only graphical formulae left, L: ", realizable_formulae)
 end
 

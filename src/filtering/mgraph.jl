@@ -25,6 +25,7 @@ function search_degree_diffs(degrees, smallest_diff)
                 degree_tracker = i
             end
         end
+
     end
 end
 
@@ -33,10 +34,10 @@ function update_maxvals!(msum, msequence, seq, i, j, sdiff)
 end
 
 """
-Try to satisfy handshake lemma. 
-It searches through the sequence for maxdegrees sequence, 
-of which elements sum is even, thus satisfying handshake lemma. 
-It will mutate both maxdegrees_sum and maxdegrees_sequence if successful.
+    Try to satisfy handshake lemma. 
+    It searches through the sequence for maxdegrees sequence, 
+    of which elements sum is even, thus satisfying handshake lemma. 
+    It will mutate both maxdegrees_sum and maxdegrees_sequence if successful.
 """
 function find_even!(msum, msequence, seq)
     smallest_diff = 100 # just a large number to initialize
@@ -124,7 +125,10 @@ function fill_maxdegrees!(maxdegrees_sequence, sequence)
     end
 end
 
-function molgraf_filter(sequence)
+"""
+    Returns true on graphically valid sequence of valences. 
+"""
+function mgraph_filter(sequence)
     sort!(sequence, by = x -> (-last(x), -length(x)))
     maxdegrees_sequence = Vector{Int}(undef, length(sequence))
 
