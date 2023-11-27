@@ -7,6 +7,7 @@
     MATCH Communications in Mathematical and in Computer Chemistry, 88(2).
     It needs some Julia-specific optimization. Notably it is type unstable.  
 =#
+using InteractiveUtils
 
 function is_leaf(t)
     return length(t) == 1
@@ -60,7 +61,7 @@ end
 
 function formula_tree(alphabet, M)
     l = produce_gfs(alphabet, M)
-    prod::Vector{Any} = [[i] for i in l[end]]
+    prod = [[i] for i in l[end]]
     for i in length(l)-2:-1:1
         prod = multiply_gf(prod, l[i], M)
     end
@@ -71,16 +72,16 @@ function generate_lst(t)
     return traverse_tree(vcat([0], t))
 end
 
-function produce_formula(mon, alphabet, lst::Vector{String})
-    compomer = [div(mon[i], alphabet[i]) for i in eachindex(mon)]
-    res = [lst[i] * (compomer[i] == 1 ? "" : string(compomer[i])) for i in eachindex(compomer) if compomer[i] != 0]
-    return join([i == "1" ? i[1] : i for i in res])
-end
-
 function fill_res!(res, lst, compomer)
     for i in eachindex(compomer)
         append!(res, fill(lst[i], compomer[i]))
     end
+end
+
+function produce_formula(mon, alphabet, lst::Vector{String})
+    compomer = [div(mon[i], alphabet[i]) for i in eachindex(mon)]
+    res = [lst[i] * (compomer[i] == 1 ? "" : string(compomer[i])) for i in eachindex(compomer) if compomer[i] != 0]
+    return join([i == "1" ? i[1] : i for i in res])
 end
 
 function produce_formula(mon, alphabet, lst::Vector{Vector{Int}})
@@ -97,10 +98,19 @@ end
     or a vector of valences (vector of vectors of ints) representing formulae, 
     e.g. [[[2, 4], [2, 4], [1], [1], [1], [1], [1], [1]], ...].
 """
-function aufbau_generator(alphabet, lst, M)
-    return [produce_formula(i, alphabet, lst) for i in generate_lst(formula_tree(alphabet, M))]
+function aufbau_generator(alphabet, lst_v, lst_s, M)
+    result_vectors = Vector{Vector{Int}}[]
+    result_strings = String[]
+    # @code_warntype formula_tree(alphabet, M)
+    generated_result = generate_lst(formula_tree(alphabet, M))
+    println("Tree searched")
+
+    result_vectors = map(x -> produce_formula(x, alphabet, lst_v), generated_result)
+    result_strings = map(x -> produce_formula(x, alphabet, lst_s), generated_result)
+    
+    return result_vectors, result_strings
 end
 
-# println(aufbau_generator(masses, valences, 30))
-
-# @code_warntype aufbau_generator(masses, valences, 30)
+# # println(aufbau_generator(masses, valences, 30))
+# result_vectors, result_strings = aufbau_generator([12,1,16], [[2,4],[1],[2]], ["C","H","O"],20)
+# println(result_vectors, result_strings)
