@@ -74,29 +74,44 @@ function generate_lst(t)
     return traverse_tree([0; t])
 end
 
-function produce_MF(mon, alphabet)
+function fill_res!(res, lst, compomer)
+    for i in eachindex(compomer)
+        append!(res, fill(lst[i], compomer[i]))
+    end
+end
+
+function produce_MF(mon, alphabet, lst)
     # lst = ["C", "H", "Cl", "F", "N", "O", "P", "S"]
-    lst = ["C", "H", "N", "O", "S"]
+    # lst = ["C", "H", "N", "O", "S"]
+    # lst = [[2,4], [1], [3,5], [2], [2,4,6]]
     compomer = [div(mon[i], alphabet[i]) for i in eachindex(mon)]
-    res = [lst[i] * string(compomer[i]) for i in eachindex(compomer) if compomer[i] != 0]
-    return join([i == "1" ? i[1] : i for i in res])
+    # res = [lst[i] * string(compomer[i]) for i in eachindex(compomer) if compomer[i] != 0]
+    # return join([i == "1" ? i[1] : i for i in res])
+    # make it return vectors of valences instead of formulae:
+    # if compomer[1] != 0 && compomer[2] != 0
+    res = Vector{Vector{Int}}()
+    fill_res!(res, lst, compomer)
+    return res
+    # else
+    #     return 
+    # end
 end
 
-function enumerate_MF(alphabet, M)
+function enumerate_MF(alphabet, lst, M)
     # @code_warntype formula_tree(alphabet, M)
-    return [produce_MF(i, alphabet) for i in generate_lst(formula_tree(alphabet, M))]
+    return [produce_MF(i, alphabet, lst) for i in generate_lst(formula_tree(alphabet, M))]
 end
 
-using BenchmarkTools
-# @time enumerate_MF([12,1,35,19,14,16,31,32],500)
-function main()
-    enum = enumerate_MF([12,1,14,16,32],43)
-    # ProfileView.@profview enumerate_MF([12,1,14,16],133)
-    println(length(enum), " ", enum)
-    # ben = @benchmark enumerate_MF([12,1,14,16],133)
-    # display(ben)
-    # @btime enumerate_MF([12,1,14,16,32],900)
-    # @time enumerate_MF([12,1,35,19,14,16,31,32],43)
-end
+# using BenchmarkTools
+# # @time enumerate_MF([12,1,35,19,14,16,31,32],500)
+# function main()
+#     enum = enumerate_MF([12,1,14,16,32],43)
+#     # ProfileView.@profview enumerate_MF([12,1,14,16],133)
+#     println(length(enum), " ", enum)
+#     # ben = @benchmark enumerate_MF([12,1,14,16],133)
+#     # display(ben)
+#     # @btime enumerate_MF([12,1,14,16,32],900)
+#     # @time enumerate_MF([12,1,35,19,14,16,31,32],43)
+# end
 
-main()
+# main()

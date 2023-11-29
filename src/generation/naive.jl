@@ -1,6 +1,5 @@
 using OffsetArrays
 using InteractiveUtils
-# include("../elements.jl")
 
 function generate_combinations(masses, elements::Vector{String}, M, ϵ)
     d = OffsetArray(fill(M + 1, 0:M), 0)
@@ -28,14 +27,13 @@ function find(M, result, d, masses, combinations, elements, index, ϵ)
         end
     end
 end
-# valences = Dict(
-#     "C" => [2,4],
-#     "H" => [1],
-#     "O" => [2];
-# )
-# masses = [12,1,16]
-# symbols = ["C","H","O"]
-# M = 20
+# # masses = [12,1,35,19,14,16,31,32]
+# masses = [12,1,14,16,32]
+# # symbols = ["C", "H", "Cl", "F", "N", "O", "P", "S"]
+# symbols = ["C", "H", "N", "O", "S"]
+# include("../elements.jl")
+# valences = valences_dict
+# M = 43
 # ϵ = 0
 
 function fill_valences!(vc, v, sc)
@@ -53,4 +51,8 @@ function naive_generator(valences, masses, symbols, M, ϵ)
     return valence_combinations
 end
 
-# naive_generator(valences, masses, symbols, M, ϵ)
+# function main(v, ms, s, _M, _ϵ)
+#     @time println(naive_generator(v, ms, s, _M, _ϵ))
+# end
+
+# main(valences, masses, symbols, M, ϵ)
