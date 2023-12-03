@@ -65,6 +65,7 @@ function find_even!(msum, msequence, seq)
             i_tracker = i
         end
     end
+    return msum
 end
 
 function get_index(indices)
@@ -84,20 +85,25 @@ end
 
 function recu_conditions_check!(mdegree_sequence, mdegree_sum, seq)
     # Step 1: Handshake Lemma
+    # println("BEFORE: ", mdegree_sum)
     if mdegree_sum % 2 != 0
         mdegree_sum = find_even!(mdegree_sum, mdegree_sequence, seq)
     end
+    # println("AFTER: ", mdegree_sum)
     if mdegree_sum % 2 != 0
+        # println("Rejected on 1")
         return false
     end
 
     # Step 2: Connectivity
     if mdegree_sum < (length(mdegree_sequence) - 1) * 2
+        # println("Rejected on 2")
         return false
     end
 
     # Step 3: Exclude Loops
     if mdegree_sum >= maximum(mdegree_sequence) * 2
+        # println("Accepted")
         return true
     else
         indices = findall(x -> x == maximum(mdegree_sequence), mdegree_sequence)
@@ -115,25 +121,20 @@ function recu_conditions_check!(mdegree_sequence, mdegree_sum, seq)
         old_max_replacement = new_sequence[index][end]
         mdegree_sequence[index] = old_max_replacement
         mdegree_sum += old_max_replacement
+        # println("Got to 3")
         return recu_conditions_check!(mdegree_sequence, mdegree_sum, new_sequence)
     end
 end
 
-function fill_maxdegrees!(maxdegrees_sequence, sequence)
-    for i in eachindex(sequence)
-        maxdegrees_sequence[i] = sequence[i][end]
-    end
-end
-
+using BenchmarkTools
 """
     Returns true on graphically valid sequence of valences. 
 """
 function mgraph_filter(sequence)
     sort!(sequence, by = x -> (-last(x), -length(x)))
-    maxdegrees_sequence = Vector{Int}(undef, length(sequence))
 
-    fill_maxdegrees!(maxdegrees_sequence, sequence)
-    
+    # maxdegrees_sequence = map(degrees -> last(degrees), sequence)
+    maxdegrees_sequence = collect(last(degrees) for degrees in sequence)
     maxdegrees_sum = sum(maxdegrees_sequence)
     
     return recu_conditions_check!(maxdegrees_sequence, maxdegrees_sum, sequence)
