@@ -56,7 +56,8 @@ function main(M_precise, ϵ, symbols, s_dict, v_dict, valences, masses_precise)
 
     # Stage 1: building up all formulae
     compomers = Vector{Vector{Int64}}[]
-    @time compomers = enumerate_MF(masses, symbols, M)
+    compomers = enumerate_MF(masses, M)
+    @btime enumerate_MF($masses, $M)
     println("Compomers generated, L: ", length(compomers))
     if length(compomers) < 50
         println("Compomers: ", compomers)
