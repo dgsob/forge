@@ -2,54 +2,17 @@ include("./elements.jl")
 include("./generation/aufbau.jl")
 include("./generation/naive.jl")
 include("./filtering/mgraph.jl")
+include("./auxiliary.jl")
+include("./filtering/basic_organic.jl")
 using BenchmarkTools
 
-function collect_formulae!(real_strings, real_vectors, symbols, order)
-    for compound in real_vectors
-        atom_count = Dict{String, Int}()
-        for atom in compound
-            symbol = symbols[atom]
-            if haskey(atom_count, symbol)
-                atom_count[symbol] += 1
-            else
-                atom_count[symbol] = 1
-            end
-        end
-        formula = ""
-        for symbol in sort(collect(keys(atom_count)), by = x -> findfirst(isequal(x), order))
-            formula *= symbol
-            if atom_count[symbol] > 1 # so that 1 is ommited as in chemical formulas
-                formula *= "$(atom_count[symbol])"
-            end
-        end    
-        push!(real_strings, formula)
-    end
-end
-
-function fill_real_vectors!(real_vectors, all_vectors)
-    for formula in all_vectors
-        # println("Time of M filtering: ")
-        # @btime mgraph_filter($formula)
-        if !mgraph_filter(formula)
-            continue
-        end
-        push!(real_vectors, formula)
-    end
-end
-
-function convert_to_ints(M, masses, ϵ)
-    M_int = round(Int, M * ϵ)
-    masses_int = round.(Int, masses .* ϵ)
-    return M_int, masses_int
-end
-
-function main(M_precise, ϵ, symbols, s_dict, v_dict, valences, masses_precise)
+function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Set-up
     println("Set-up starts")
     M, masses = convert_to_ints(M_precise, masses_precise, ϵ)
     println("Total mass:", M)
     for i in eachindex(symbols)
-        println(symbols[i], " ", masses[i])
+        println(symbols[i], ":", masses[i])
     end
     println("Set-up completed")
     println("")
@@ -57,27 +20,37 @@ function main(M_precise, ϵ, symbols, s_dict, v_dict, valences, masses_precise)
     # Stage 1: building up all formulae
     compomers = Vector{Vector{Int64}}[]
     compomers = enumerate_MF(masses, M)
-    @btime enumerate_MF($masses, $M)
+    # @btime enumerate_MF($masses, $M)
     println("Compomers generated, L: ", length(compomers))
     if length(compomers) < 50
         println("Compomers: ", compomers)
     end
     println("")
     
-    # # Stage 2: filtering 
-    # real_vectors = Vector{Vector{Int64}}[]
-    # fill_real_vectors!(real_vectors, all_vectors)
-    # println("Filtering completed, L: ", length(real_vectors))
-    # if length(real_vectors) < 4
-    #     println("Filtered vectors: ", real_vectors)
-    # end
-    # println("")
+    # Stage 2: filtering 
+    realizables = Vector{Int}[]
+    for compomer in compomers
+        if !basic_organic_filter(compomer)
+            continue
+        end
+        if !mgraph_filter(build_repeat_seq(compomer, valences))
+            continue
+        end
+        push!(realizables, compomer)
+    end
+    n = length(realizables)
+    println("Filtering completed, L: ", n)
+    if n < 20
+        println("Filtered vectors: ", realizables)
+    end
+    println("")
 
-    # # Display formulae 
-    # real_strings = Vector{String}()
-    # collect_formulae!(real_strings, real_vectors, s_dict, symbols)
-    # println("Vectors converted to formulae: ", real_strings)
-    # println("")
+    # Display formulae, only first 30 if larger
+    if n ≤ 30
+        display_formulae(realizables, symbols, n)
+    else
+        display_formulae(realizables[1:30], symbols, 30)
+    end
 end
 # 103.12100 ; 46 ; 775
-main(46, 1, element_symbols, symbols_dict, valences_dict, element_valences, element_masses)
+main(800, 1, element_symbols, element_valences, element_masses)
