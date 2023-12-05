@@ -29,10 +29,6 @@ function search_degree_diffs(degrees, smallest_diff)
     end
 end
 
-function update_maxvals!(msum, msequence, seq, i, j, sdiff)
-
-end
-
 """
     Try to satisfy handshake lemma. 
     It searches through the sequence for maxdegrees sequence, 
@@ -85,25 +81,20 @@ end
 
 function recu_conditions_check!(mdegree_sequence, mdegree_sum, seq)
     # Step 1: Handshake Lemma
-    # println("BEFORE: ", mdegree_sum)
     if mdegree_sum % 2 != 0
         mdegree_sum = find_even!(mdegree_sum, mdegree_sequence, seq)
     end
-    # println("AFTER: ", mdegree_sum)
     if mdegree_sum % 2 != 0
-        # println("Rejected on 1")
         return false
     end
 
     # Step 2: Connectivity
     if mdegree_sum < (length(mdegree_sequence) - 1) * 2
-        # println("Rejected on 2")
         return false
     end
 
     # Step 3: Exclude Loops
     if mdegree_sum >= maximum(mdegree_sequence) * 2
-        # println("Accepted")
         return true
     else
         indices = findall(x -> x == maximum(mdegree_sequence), mdegree_sequence)
@@ -113,7 +104,7 @@ function recu_conditions_check!(mdegree_sequence, mdegree_sum, seq)
         end
         mdegree_sum -= maximum(mdegree_sequence)
         new_sequence = deepcopy(seq)
-        sequence = nothing
+        seq = nothing
         pop!(new_sequence[index])
         if isempty(new_sequence[index])
             return false
@@ -121,7 +112,6 @@ function recu_conditions_check!(mdegree_sequence, mdegree_sum, seq)
         old_max_replacement = new_sequence[index][end]
         mdegree_sequence[index] = old_max_replacement
         mdegree_sum += old_max_replacement
-        # println("Got to 3")
         return recu_conditions_check!(mdegree_sequence, mdegree_sum, new_sequence)
     end
 end
