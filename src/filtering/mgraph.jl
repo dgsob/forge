@@ -3,9 +3,6 @@
     It is similar to SENIOR rule check, but instead accounts for all of the valences for a given element.
 =#
 
-function is_hydrogen(element)
-    return length(element) === 1 && element[1] === 1
-end
 function is_monovalent(element)
     return length(element) === 1
 end
@@ -40,16 +37,13 @@ function find_even!(msum, msequence, seq)
     i_tracker = 0
     j = 0
     for i in eachindex(seq)
-        if is_hydrogen(seq[i])
+        if is_monovalent(seq[i])
             if smallest_diff !== 100
                 msequence[i_tracker] = seq[i_tracker][end-j]
                 msum -= smallest_diff
                 return msum
             end
             return msum
-        end
-        if is_monovalent(seq[i])
-            continue
         end
         j, diff = search_degree_diffs(seq[i], smallest_diff)
         if diff === 1
@@ -121,7 +115,7 @@ using BenchmarkTools
     Returns true on graphically valid sequence of valences. 
 """
 function mgraph_filter(sequence)
-    sort!(sequence, by = x -> (-last(x), -length(x)))
+    sort!(sequence, by = x -> (-length(x), -last(x)))
 
     # maxdegrees_sequence = map(degrees -> last(degrees), sequence)
     maxdegrees_sequence = collect(last(degrees) for degrees in sequence)
