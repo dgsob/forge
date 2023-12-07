@@ -38,12 +38,7 @@ function find_even!(msum, msequence, seq)
     j = 0
     for i in eachindex(seq)
         if is_monovalent(seq[i])
-            if smallest_diff !== 100
-                msequence[i_tracker] = seq[i_tracker][end-j]
-                msum -= smallest_diff
-                return msum
-            end
-            return msum
+            continue
         end
         j, diff = search_degree_diffs(seq[i], smallest_diff)
         if diff === 1
@@ -54,6 +49,10 @@ function find_even!(msum, msequence, seq)
             smallest_diff = diff
             i_tracker = i
         end
+    end
+    if smallest_diff !== 100
+        msequence[i_tracker] = seq[i_tracker][end-j]
+        msum -= smallest_diff
     end
     return msum
 end
@@ -115,9 +114,6 @@ using BenchmarkTools
     Returns true on graphically valid sequence of valences. 
 """
 function mgraph_filter(sequence)
-    sort!(sequence, by = x -> (-length(x), -last(x)))
-
-    # maxdegrees_sequence = map(degrees -> last(degrees), sequence)
     maxdegrees_sequence = collect(last(degrees) for degrees in sequence)
     maxdegrees_sum = sum(maxdegrees_sequence)
     
