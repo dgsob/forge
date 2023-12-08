@@ -28,7 +28,10 @@ function ∑(t::Vector{Branch})
 end
 
 function sc(t::Int, r, res, alphabet)
-    push!(res, [r[2:end]; t] .÷ alphabet)
+    compomer = [r[2:end]; t] .÷ alphabet
+    if basic_organic_filter(compomer)
+        push!(res, compomer)
+    end
 end
 
 function sc(t::Branch, r, res, alphabet)

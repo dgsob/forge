@@ -4,23 +4,23 @@ include("./generation/naive.jl")
 include("./filtering/mgraph.jl")
 include("./auxiliary.jl")
 include("./filtering/basic_organic.jl")
+include("./filtering/mass_precision.jl")
 using BenchmarkTools
 
 function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Set-up
     println("Set-up starts")
-    M, masses = convert_to_ints(M_precise, masses_precise, ϵ)
-    println("Total mass:", M)
+    M_int, masses_int = convert_to_ints(M_precise, masses_precise, 1)
+    println("Total mass:", M_int, ", ", M_precise)
     for i in eachindex(symbols)
-        println(symbols[i], ":", masses[i])
+        println(symbols[i], ":", masses_int[i])
     end
     println("Set-up completed")
     println("")
 
     # Stage 1: building up all formulae
     compomers = Vector{Vector{Int64}}[]
-    compomers = enumerate_MF(masses, M)
-    # @btime enumerate_MF($masses, $M)
+    compomers = enumerate_MF(masses_int, M_int)
     println("Compomers generated, L: ", length(compomers))
     if length(compomers) < 50
         println("Compomers: ", compomers)
@@ -30,7 +30,7 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Stage 2: filtering 
     realizables = Vector{Int}[]
     for compomer in compomers
-        if !basic_organic_filter(compomer)
+        if !mass_precision_filter(compomer, masses_precise, M_precise, ϵ)
             continue
         end
         if !mgraph_filter(build_repeat_seq(compomer, valences))
@@ -53,4 +53,4 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     end
 end
 # 103.12100 ; 46 ; 775
-main(800, 1, element_symbols, element_valences, element_masses)
+main(45.05785, 5e-6, element_symbols, element_valences, element_masses)
