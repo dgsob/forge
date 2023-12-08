@@ -17,11 +17,19 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Building up all formulae + filtration
     compomers = Vector{Vector{Int64}}[]
     @time compomers = enumerate_MF(masses_int, M_int, masses_precise, M_precise, ϵ, valences)
-    println("Compomers generated, L: ", length(compomers))
+    println("Compomers generated and filtered, L: ", length(compomers))
 
     n = length(compomers)
     if n ≤ 30
         println("Compomers: ", compomers)
+    end
+    println("")
+
+    theone = [42,72,1,8,1,0]
+    if theone in compomers
+        println("Found")
+    else
+        println("Not found")
     end
     println("")
 
@@ -33,4 +41,4 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     end
 end
 # 103.12100 ; 46 ; 775
-main(106.00885, 5e-5, element_symbols, element_valences, element_masses)
+main(750.01300, 5e-4, element_symbols, element_valences, element_masses)
