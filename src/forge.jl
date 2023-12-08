@@ -1,9 +1,7 @@
 include("./elements.jl")
 include("./generation/aufbau.jl")
-include("./generation/naive.jl")
 include("./filtering/mgraph.jl")
 include("./auxiliary.jl")
-include("./filtering/basic_organic.jl")
 include("./filtering/mass_precision.jl")
 using BenchmarkTools
 
@@ -11,7 +9,7 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Set-up
     println("Set-up starts")
     M_int, masses_int = convert_to_ints(M_precise, masses_precise, 1)
-    println("Total mass:", M_int, ", ", M_precise)
+    println("Total mass:", M_int, ", ", M_precise, ", ", M_precise+ϵ, ", ", M_precise-ϵ)
     for i in eachindex(symbols)
         println(symbols[i], ":", masses_int[i])
     end
@@ -53,4 +51,4 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     end
 end
 # 103.12100 ; 46 ; 775
-main(45.05785, 5e-6, element_symbols, element_valences, element_masses)
+main(106.00885, 5e-5, element_symbols, element_valences, element_masses)
