@@ -8,21 +8,6 @@ function convert_to_ints(M, masses, ϵ)
     return M_int, masses_int
 end
 
-function build_repeat_seq(compomer, degrees)
-    result = Vector{Vector{Int}}(undef, sum(compomer))
-    index = 1
-    for i in eachindex(compomer)
-        if compomer[i] === 0
-            continue
-        end
-        for j in 1:compomer[i]
-            result[index] = degrees[i]
-            index += 1
-        end
-    end
-    return result
-end
-
 # function build_repeat_dict(compomer, degrees, symbols)
 #     return Dict(zip((symbols, degrees), collect(i for i in compomer if i !== 0)))
 # end

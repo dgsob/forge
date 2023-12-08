@@ -1,8 +1,6 @@
 include("./elements.jl")
 include("./generation/aufbau.jl")
-include("./filtering/mgraph.jl")
 include("./auxiliary.jl")
-include("./filtering/mass_precision.jl")
 using BenchmarkTools
 
 function main(M_precise, ϵ, symbols, valences, masses_precise)
@@ -16,38 +14,22 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     println("Set-up completed")
     println("")
 
-    # Stage 1: building up all formulae
+    # Building up all formulae + filtration
     compomers = Vector{Vector{Int64}}[]
-    compomers = enumerate_MF(masses_int, M_int)
+    @time compomers = enumerate_MF(masses_int, M_int, masses_precise, M_precise, ϵ, valences)
     println("Compomers generated, L: ", length(compomers))
-    if length(compomers) < 50
+
+    n = length(compomers)
+    if n ≤ 30
         println("Compomers: ", compomers)
-    end
-    println("")
-    
-    # Stage 2: filtering 
-    realizables = Vector{Int}[]
-    for compomer in compomers
-        if !mass_precision_filter(compomer, masses_precise, M_precise, ϵ)
-            continue
-        end
-        if !mgraph_filter(build_repeat_seq(compomer, valences))
-            continue
-        end
-        push!(realizables, compomer)
-    end
-    n = length(realizables)
-    println("Filtering completed, L: ", n)
-    if n < 20
-        println("Filtered vectors: ", realizables)
     end
     println("")
 
     # Display formulae, only first 30 if larger
     if n ≤ 30
-        display_formulae(realizables, symbols, n)
+        display_formulae(compomers, symbols, n)
     else
-        display_formulae(realizables[1:30], symbols, 30)
+        display_formulae(compomers[1:30], symbols, 30)
     end
 end
 # 103.12100 ; 46 ; 775

@@ -2,7 +2,9 @@ using InteractiveUtils
 using ProfileView, Profile
 using StaticArrays
 using BenchmarkTools
-include("../filtering/basic_organic.jl")
+include("./filtering/basic_organic.jl")
+include("./filtering/mass_precision.jl")
+include("./filtering/mgraph.jl")
 
 #=
     This is based on the python's code provided by: 
@@ -28,26 +30,41 @@ function ∑(t::Vector{Branch})
     return t[1].leaf + ∑(t[1].subbranch)
 end
 
-function sc(t::Int, r, res, alphabet)
+function build_repeat_seq(compomer, degrees)
+    result = Vector{Vector{Int}}(undef, sum(compomer))
+    index = 1
+    for i in eachindex(compomer)
+        if compomer[i] === 0
+            continue
+        end
+        for j in 1:compomer[i]
+            result[index] = degrees[i]
+            index += 1
+        end
+    end
+    return result
+end
+
+function sc(t::Int, r, res, alphabet, masses_precise, M_precise, ϵ, valences)
     compomer = [r[2:end]; t] .÷ alphabet
-    if basic_organic_filter(compomer)
+    if basic_organic_filter(compomer) && mass_precision_filter(compomer, masses_precise, M_precise, ϵ) && mgraph_filter(build_repeat_seq(compomer, valences))
         push!(res, compomer)
     end
 end
 
-function sc(t::Branch, r, res, alphabet)
-    sc(t.subbranch, [r..., t.leaf], res, alphabet)
+function sc(t::Branch, r, res, alphabet, masses_precise, M_precise, ϵ, valences)
+    sc(t.subbranch, [r..., t.leaf], res, alphabet, masses_precise, M_precise, ϵ, valences)
 end
 
-function sc(t::Vector{Branch}, r, res, alphabet)
+function sc(t::Vector{Branch}, r, res, alphabet, masses_precise, M_precise, ϵ, valences)
     for branch in t
-        sc(branch.subbranch, [r..., branch.leaf], res, alphabet)
+        sc(branch.subbranch, [r..., branch.leaf], res, alphabet, masses_precise, M_precise, ϵ, valences)
     end
 end
 
-function traverse_tree(tree, alphabet)
+function traverse_tree(tree, alphabet, masses_precise, M_precise, ϵ, valences)
     res = Vector{Vector{Int}}()
-    sc(tree, Int[], res, alphabet)
+    sc(tree, Int[], res, alphabet, masses_precise, M_precise, ϵ, valences)
     return res
 end
 
@@ -73,12 +90,12 @@ function formula_tree(alphabet, M)
     return multiply_gf(l[end], l, M, lastindex(l)-1)
 end
 
-function generate_lst(t, alphabet)
-    return traverse_tree(Branch(0, t...), alphabet)
+function generate_lst(t, alphabet, masses_precise, M_precise, ϵ, valences)
+    return traverse_tree(Branch(0, t...), alphabet, masses_precise, M_precise, ϵ, valences)
 end
 
-function enumerate_MF(alphabet, M)
+function enumerate_MF(alphabet, M, masses_precise, M_precise, ϵ, valences)
     list = Vector{Vector{Int64}}()
-    list = generate_lst(formula_tree(alphabet, M), alphabet)
+    list = generate_lst(formula_tree(alphabet, M), alphabet, masses_precise, M_precise, ϵ, valences)
     return list
 end
