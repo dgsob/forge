@@ -42,7 +42,7 @@ function find_even!(msum, msequence, seq)
         end
         j, diff = search_degree_diffs(seq[i], smallest_diff)
         if diff === 1
-            msequence[i] = seq[end-j]
+            msequence[i] = seq[i][end-j]
             msum -= diff
             return msum
         elseif diff !== 100
