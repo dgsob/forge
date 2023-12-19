@@ -1,46 +1,44 @@
 include("../src/elements.jl")
 include("../src/generation/aufbau.jl")
-include("../src/generation/naive.jl")
-include("../src/filtering/mgraph.jl")
+include("../src/generation/filtering/mgraph.jl")
 include("../src/auxiliary.jl")
 
 include("../src/elements.jl")
 include("../src/generation/aufbau.jl")
-include("../src/generation/naive.jl")
-include("../src/filtering/mgraph.jl")
+include("../src/generation/filtering/mgraph.jl")
 include("../src/auxiliary.jl")
 include("./old_m_versions.jl")
 
 using BenchmarkTools
 
-MM = 290
+MM = 180
 function arts!(realizables, compomers, valences)
     for compomer in compomers
         seq = build_repeat_seq(compomer, valences)
-        if length(seq) > 8 
-            continue
-        end
-        if mod_mgraph_filter(seq)
+        # if length(seq) < 60
+        #     continue
+        # end
+        if mgraph_filter(seq)
             push!(realizables, compomer)
             continue
         end
         measure = 1
-        second_measure = 0
         for i in seq
             measure *= length(i)
-            if length(i) > 1
-                second_measure += 1
-            end
+        end
+        if measure < 0
+            println("Something's wierd")
+            continue
         end
         measure = measure^(1/length(seq))
         
-        if measure < 2.3
+        if measure <= 1.5
             continue
         end
         println("-----------------------------------")
         println(seq)
         println("Measure: ")
-        println(measure, ", ", length(seq), ", M: ", second_measure)
+        println(measure, ", ", length(seq))
         println("M filtering timing starts...")
         @btime mgraph_filter($seq)
         println("M filtering timing completed.")
@@ -63,7 +61,7 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
 
     # Stage 1: building up all formulae
     compomers = Vector{Vector{Int64}}[]
-    compomers = enumerate_MF(masses, M)
+    compomers = enumerate_MF(masses, M, masses_precise, M_precise, ϵ, valences)
     # @btime enumerate_MF($masses, $M)
     println("Compomers generated, L: ", length(compomers))
     if length(compomers) < 5
