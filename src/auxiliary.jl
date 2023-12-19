@@ -3,7 +3,9 @@
 =#
 
 function convert_to_ints(M, masses, ϵ)
+    # TODO: Figure out a way to round the mass values to integers in a right way
     M_int = round(Int, M * ϵ)
+    # M_int = floor(Int, M * ϵ)
     masses_int = round.(Int, masses .* ϵ)
     return M_int, masses_int
 end
