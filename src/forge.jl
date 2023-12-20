@@ -1,7 +1,7 @@
 include("./elements.jl")
 include("./generation/aufbau.jl")
 include("./auxiliary.jl")
-using BenchmarkTools
+# using BenchmarkTools
 
 function main(M_precise, ϵ, symbols, valences, masses_precise)
     # Set-up
@@ -25,12 +25,12 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     end
     println("")
 
-    theone = [42,72,1,8,1,0]
-    if theone in compomers
-        println("Found")
-    else
-        println("Not found")
-    end
+    # theone = [52,71,7,13,0,0]
+    # if theone in compomers
+    #     println("Found")
+    # else
+    #     println("Not found")
+    # end
     println("")
 
     # Display formulae, only first 30 if larger
@@ -40,5 +40,10 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
         display_formulae(compomers[1:30], symbols, 30)
     end
 end
+
 # 103.12100 ; 46 ; 775
-main(750.01300, 5e-4, element_symbols, element_valences, element_masses)
+# Parse command-line arguments and call main
+Provided_mass = parse(Float64, ARGS[1])
+Provided_accu = parse(Float64, ARGS[2])
+
+main(Provided_mass, Provided_accu, element_symbols, element_valences, element_masses)

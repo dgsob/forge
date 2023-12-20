@@ -1,0 +1,4 @@
+name = "forge"
+uuid = "a430bfb5-e61c-4765-8d68-4bc50935cdcd"
+authors = ["dgsob <damian.sobec@gmail.com>"]
+version = "0.1.0"
