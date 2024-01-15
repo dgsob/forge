@@ -1,6 +1,7 @@
 #= 
     This is a custom algorithm for filtering sequences based on their molecular graph realizability.
     It is similar to SENIOR rule check, but instead accounts for all of the valences for a given element.
+    It is essentially the main part of the thesis. 
 =#
 
 function is_monovalent(element)
@@ -27,7 +28,7 @@ function search_degree_diffs(degrees, smallest_diff)
 end
 
 """
-    Try to satisfy handshake lemma. 
+    Tries to satisfy handshake lemma. 
     It searches through the sequence for maxdegrees sequence, 
     of which elements sum is even, thus satisfying handshake lemma. 
     It will mutate both maxdegrees_sum and maxdegrees_sequence if successful.

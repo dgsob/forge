@@ -41,7 +41,7 @@ function main(M_precise, ϵ, symbols, valences, masses_precise)
     end
 end
 
-# 103.12100 ; 46 ; 775
+# Testing values: 103.12100 ; 46 ; 775
 # Parse command-line arguments and call main
 Provided_mass = parse(Float64, ARGS[1])
 Provided_accu = parse(Float64, ARGS[2])

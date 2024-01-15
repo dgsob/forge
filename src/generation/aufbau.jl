@@ -7,10 +7,12 @@ include("./filtering/mass_precision.jl")
 include("./filtering/mgraph.jl")
 
 #=
-    This is based on the python's code provided by: 
+    This is a direct adaptation of the python's code provided as a proof-of-concept by:
     Li, S., Bohman, B., & Jayatilaka, D. (2022). 
     Enumerating Possible Molecular Formulae in Mass Spectrometry Using a Generating Function Based Method. 
     MATCH Communications in Mathematical and in Computer Chemistry, 88(2).
+
+    It could use some optimization, especially with the types. 
 =#
 
 struct Branch <: Any

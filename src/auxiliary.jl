@@ -1,11 +1,16 @@
 #=
     Functions and methods mostly for converting data structures 
 =#
-
-function convert_to_ints(M, masses, ϵ)
-    # TODO: Figure out a way to round the mass values to integers in a right way
+"""
+Converts input mass to integer mass. It will round it to the nearest integer which is not always correct.
+Sometimes the value corresponding to combinatios of all the mass of individual isotopes sum up to a preceise
+mass of which integer value should be floor. Pass nearest=false if the results obtained by default are not satisfactory.
+"""
+function convert_to_ints(M, masses, ϵ, nearest=true)
     M_int = round(Int, M * ϵ)
-    # M_int = floor(Int, M * ϵ)
+    if !nearest
+        M_int = floor(Int, M * ϵ)
+    end
     masses_int = round.(Int, masses .* ϵ)
     return M_int, masses_int
 end
