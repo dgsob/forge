@@ -29,7 +29,9 @@ The final ouptut in this speciifc case is:
 
 
 ## Limitation
-Technically increasing the accuracy should result in reduction of the number of formulas in the output, helping to identify more likely ones. Unfortunately the problem of isotope masses is not addressed. By default the masses of elements are defined as the masses of their most abundant isotopes. In the example above the provided mass is of `C4H12N2`. In the output list of possible formulas, we can see that `C4H12N2` is indeed present at the n-1 position, where n is the size of the list. However, if we increase the accuracy, we will filter out this "correct" formula. This is caused by the most abundant isotopes assumption and is dependent on individual case, which is a major drawback for practical use.
+Technically increasing the accuracy should result in reduction of the number of formulas in the output, helping to identify more likely ones. Unfortunately the problem of isotope masses is not addressed. By default the masses of elements are defined as the masses of their most abundant isotopes. In the example above the provided mass is of `C4H12N2`. 
+
+In the example output list of possible formulas, we can see that `C4H12N2` is indeed present at the n-1 position, where n is the size of the list. However, if we increase the accuracy, we will filter out this "correct" formula. This is caused by the most abundant isotopes assumption and is dependent on individual case, which is a major drawback for practical use.
 
 ## Remark
 Having a mass of an unknow compound, we aim to pinpoint as little number of compounds it can correspond to. It may seem counterintuitive that we essentially increase the number of these compunds using my algorithm instead of SENIOR check. 
