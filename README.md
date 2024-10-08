@@ -28,7 +28,7 @@ The final ouptut in this speciifc case is:
 `["C3H5FSi", "C3H8N2O", "C3H8OSi", "C5H9F", "C5H12O", "CH3B2ClO", "CH4OSi2", "CH4N2OSi", "CHOPSi", "CHFSi2", "CHFN2Si", "C2H5PSi", "C2H8Si2", "C2H8N2Si", "C2H8N4", "C2H4O2Si", "C2H4SSi", "C2HFOSi", "C4H12N2", "C4H12Si"]`
 
 
-## Limitation
+## Limitations
 Technically increasing the accuracy should result in reduction of the number of formulas in the output, helping to identify more likely ones. Unfortunately the problem of isotope masses is not addressed. In the program's code - by default - the masses of elements are assumed to be and defined as the masses of their most abundant isotopes. 
 
 In the example above the provided mass is of `C4H12N2`. In the output list of possible formulas, we can see that `C4H12N2` is indeed present at the n-1 position, where n is the size of the list. However, if we increase the accuracy, we will filter out this "correct" formula. This is caused by the most abundant isotope assumption and is dependent on individual case, which is a major drawback for practical use.
@@ -38,7 +38,7 @@ Having a mass of an unknow compound, we aim to pinpoint as little number of comp
 
 However, as mentioned above, the aim is to include rare compounds overlooked otherwise. Then, under the assumption that the masses of individual elements are known (which is not that simple, as pointed out in "Limitations"), we obtain a list of compound formulas that for sure contains the formula of the compound of interest. 
 
-Theoritically speaking, such a list will already be relatively "small", as solving the molecular graph realizaton problem guarantees that each of the output formulas can be represented as a [`molecular graph`](https://en.wikipedia.org/wiki/Molecular_graph), which alone greatly reduces the number of possible atom combinations. It does not account for a more sophisticated chemical and/or biological context of molecule formation though. Thus, a number of additional filters should be used to further reduce the possible options. 
+Theoritically speaking, such a list will already be relatively "small", as solving the molecular graph realizaton problem guarantees that each of the output formulas can be represented as a [`molecular graph`](https://en.wikipedia.org/wiki/Molecular_graph), which alone greatly reduces the number of possible atom combinations. It does not account for a more sophisticated chemical and/or biological context of molecule formation though. Thus, a number of additional filters - or modern machine learning techniques - should be used to further reduce the possible options. 
 
-For example, see: 
+For examples of heuristic filtering, including the abovementioned SENIOR check, see: 
 [`Kind T, Fiehn O. Seven Golden Rules for heuristic filtering of molecular formulas obtained by accurate mass spectrometry. BMC Bioinformatics. 2007 Mar 27;8:105. doi: 10.1186/1471-2105-8-105. PMID: 17389044; PMCID: PMC1851972.`](https://pubmed.ncbi.nlm.nih.gov/17389044/)
