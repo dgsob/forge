@@ -16,8 +16,8 @@ Coming up with and testing different approaches to solve it was presented in my 
 ## The solution
 Algorithm with theoretically polynomial time complexity, but linear in practice (when applied to chemical elements).
 
-The pseudo-code can be found [here](https://github.com/dgsob/forge/blob/main/mgrc.pdf).  
-Example in Julia is a part of `forge` implemented [here](https://github.com/dgsob/forge/blob/main/src/generation/filtering/mgraph.jl).
+The pseudo-code is available [here](https://github.com/dgsob/forge/blob/main/mgrc.pdf).  
+Example implementation in Julia is a part of `forge` and can be found [here](https://github.com/dgsob/forge/blob/main/src/generation/filtering/mgraph.jl).
 
 ## Additional remarks on forge
 
