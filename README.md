@@ -17,7 +17,7 @@ Coming up with and testing different approaches to solve it was presented in my 
 Algorithm with theoretically polynomial time complexity, but linear in practice (when applied to chemical elements).
 
 The pseudo-code can be found [here](https://github.com/dgsob/forge/blob/main/mgrc.pdf).  
-Example implemenation in Julia is a part of `forge` and can be found [here](https://github.com/dgsob/forge/blob/main/src/generation/filtering/mgraph.jl).
+Example in Julia is a part of `forge` implemented [here](https://github.com/dgsob/forge/blob/main/src/generation/filtering/mgraph.jl).
 
 ## Additional remarks on forge
 
@@ -39,7 +39,7 @@ Technically increasing the accuracy should result in reduction of the number of 
 In the example above the provided mass is of `C4H12N2`. In the output list of possible formulas, we can see that `C4H12N2` is indeed present at the n-1 position, where n is the size of the list. However, if we increase the accuracy, we will filter out this "correct" formula. This is caused by the most abundant isotope assumption and is dependent on individual case, which is a major drawback for practical use.
 
 ### Filtering
-Having a mass of an unknow compound, we aim to pinpoint as little number of compounds it can correspond to. It may seem counterintuitive that we essentially increase the number of these compunds using my algorithm instead of SENIOR check. 
+Having a mass of an unknow compound, we aim to pinpoint as little number of compounds it can correspond to. It may seem counterintuitive that we essentially increase the number of these compunds using the proposed MGRC algorithm instead of SENIOR check. 
 
 However, as mentioned above, the aim is to include rare compounds overlooked otherwise. Then, under the assumption that the masses of individual elements are known (which is not that simple, as pointed out in "Limitations"), we obtain a list of compound formulas that for sure contains the formula of the compound of interest. 
 
