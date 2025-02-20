@@ -14,10 +14,13 @@ According to my knowledge, at the time of the repository's publication there was
 Coming up with and testing different approaches to solve it was presented in my bachelor thesis "Analysis of structures of chemical compounds by means of graph theory" in January 2024.
 
 ## The solution
-Algorithm with theoretically polynomial time complexity, but linear in practice (when applied to chemical elements).
+Algorithm with theoretically polynomial time complexity, where the worst case can be approximated with $O(m^2n)$ with $m$ - the maximum size of a set, and $n$ - the number of sets in the sequence.
+This is an improvement over $O(m^n)$ for blindly checking every combination.
+
+In practice (when applied to chemical elements), as $m$ is both small and does not change much, the observed complexity resembles a linear one. 
 
 The pseudo-code is available [here](https://github.com/dgsob/forge/blob/main/mgrc.pdf).  
-Example implementation in Julia is a part of `forge` and can be found [here](https://github.com/dgsob/forge/blob/main/src/generation/filtering/mgraph.jl).
+Example implementation in Julia is a part of `forge` and can be found [here](https://github.com/dgsob/forge/blob/main/src/generation/filtering/mgraph.jl). 
 
 ## Additional remarks on forge
 
